@@ -511,6 +511,7 @@ local function typetoStr(typ)
     --typ = typ:gsub("ImStr","STR")
     typ = typ:gsub("Im","")
     typ = typ:gsub("[<>]","")
+	typ = typ:gsub("::","_")
 	return typ
    -- return "_"..typ
 end
@@ -737,6 +738,7 @@ local function parseFunction(self,stname,itt,namespace,locat)
 	local argsTa2 = {}
 	local noname_counter = 0
 	for i,ar in ipairs(argsTa) do
+		--print("argsTa",i,ar)
 		local ttype,template,te,code2 = check_template(ar) --ar:match("([^%s,%(%)]+)%s*<(.-)>")
 		if template and not self.skip_template[ttype] then
 			if self.typenames[stname] ~= template then --rule out template typename
@@ -3238,14 +3240,16 @@ function M.Parser()
                 --print(k,#v)
                 table.insert(strt,string.format("%s\t%d",k,#v))
                 local typesc,post,pat = name_overloadsAlgo(v)
-				-- if k=="ImPlot_PlotLine" then
-				-- print"----------------------"
-				-- M.prtable(v)
-				-- M.prtable(typesc)
-				-- M.prtable(post)
-				-- M.prtable(pat)
-				-- os.exit()
-				-- end
+				--[[
+				if k=="TextEditor_SetText" then
+					print"----------------------"
+					M.prtable(v)
+					M.prtable(typesc)
+					M.prtable(post)
+					M.prtable(pat)
+					os.exit()
+				end
+				--]]
                 for i,t in ipairs(v) do
                     --take overloaded name from manual table or algorythm
                     t.ov_cimguiname = self.getCname_overload(t.stname,t.funcname,t.signature,t.namespace) or k.."_"..typetoStrpat(pat[i],post[i],typesc)
